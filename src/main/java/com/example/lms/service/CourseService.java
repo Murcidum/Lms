@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ public class CourseService {
         return courseMapper.toDto(getEntityById(id));
     }
 
+    @Transactional
     public CourseDto create(CourseCreateDto dto) {
         Course course = courseMapper.toEntity(dto);
         course.setTeacher(teacherRepository.findById(dto.getTeacherId())
@@ -37,6 +39,7 @@ public class CourseService {
         return courseMapper.toDto(courseRepository.save(course));
     }
 
+    @Transactional
     public CourseDto update(UUID id, CourseCreateDto dto) {
         Course course = getEntityById(id);
         course.setName(dto.getName());
@@ -47,6 +50,9 @@ public class CourseService {
     }
 
     public void delete(UUID id) {
+        if (!courseRepository.existsById(id)) {
+            throw new EntityNotFoundException("Course not found: " + id);
+        }
         courseRepository.deleteById(id);
     }
 

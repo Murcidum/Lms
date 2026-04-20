@@ -19,5 +19,11 @@ public interface ScheduleRepository extends JpaRepository<Schedule, UUID> {
     @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM Schedule s WHERE s.teacher.id = :teacherId AND s.dateTime < :endDateTime AND s.endDateTime > :dateTime AND s.id <> :excludeId")
     boolean existsTeacherConflictExcluding(@Param("teacherId") UUID teacherId, @Param("dateTime") LocalDateTime dateTime, @Param("endDateTime") LocalDateTime endDateTime, @Param("excludeId") UUID excludeId);
 
+    @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM Schedule s WHERE s.group.id = :groupId AND s.dateTime < :endDateTime AND s.endDateTime > :dateTime")
+    boolean existsGroupConflict(@Param("groupId") UUID groupId, @Param("dateTime") LocalDateTime dateTime, @Param("endDateTime") LocalDateTime endDateTime);
+
+    @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM Schedule s WHERE s.group.id = :groupId AND s.dateTime < :endDateTime AND s.endDateTime > :dateTime AND s.id <> :excludeId")
+    boolean existsGroupConflictExcluding(@Param("groupId") UUID groupId, @Param("dateTime") LocalDateTime dateTime, @Param("endDateTime") LocalDateTime endDateTime, @Param("excludeId") UUID excludeId);
+
 }
 

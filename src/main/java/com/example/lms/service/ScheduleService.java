@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -43,8 +44,10 @@ public class ScheduleService {
         return scheduleMapper.toDto(getEntityById(id));
     }
 
+    @Transactional
     public ScheduleDto create(ScheduleCreateDto dto) {
         checkTeacherConflict(dto.getTeacherId(), dto.getDateTime(), dto.getEndDateTime(), null);
+        checkGroupConflict(dto.getGroupId(), dto.getDateTime(), dto.getEndDateTime(), null);
         Schedule schedule = scheduleMapper.toEntity(dto);
         schedule.setGroup(groupRepository.findById(dto.getGroupId())
                 .orElseThrow(() -> new EntityNotFoundException("Group not found: " + dto.getGroupId())));
@@ -55,8 +58,10 @@ public class ScheduleService {
         return scheduleMapper.toDto(scheduleRepository.save(schedule));
     }
 
+    @Transactional
     public ScheduleDto update(UUID id, ScheduleCreateDto dto) {
         checkTeacherConflict(dto.getTeacherId(), dto.getDateTime(), dto.getEndDateTime(), id);
+        checkGroupConflict(dto.getGroupId(), dto.getDateTime(), dto.getEndDateTime(), id);
         Schedule schedule = getEntityById(id);
         schedule.setGroup(groupRepository.findById(dto.getGroupId())
                 .orElseThrow(() -> new EntityNotFoundException("Group not found: " + dto.getGroupId())));
@@ -70,6 +75,9 @@ public class ScheduleService {
     }
 
     public void delete(UUID id) {
+        if (!scheduleRepository.existsById(id)) {
+            throw new EntityNotFoundException("Schedule not found: " + id);
+        }
         scheduleRepository.deleteById(id);
     }
 
@@ -84,6 +92,15 @@ public class ScheduleService {
                 : scheduleRepository.existsTeacherConflictExcluding(teacherId, dateTime, endDateTime, excludeId);
         if (conflict) {
             throw new IllegalStateException("Teacher already has a class at this time");
+        }
+    }
+
+    private void checkGroupConflict(UUID groupId, LocalDateTime dateTime, LocalDateTime endDateTime, UUID excludeId) {
+        boolean conflict = excludeId == null
+                ? scheduleRepository.existsGroupConflict(groupId, dateTime, endDateTime)
+                : scheduleRepository.existsGroupConflictExcluding(groupId, dateTime, endDateTime, excludeId);
+        if (conflict) {
+            throw new IllegalStateException("Group already has a class at this time");
         }
     }
 }

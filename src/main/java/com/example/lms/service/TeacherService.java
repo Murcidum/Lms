@@ -42,6 +42,9 @@ public class TeacherService {
 
 
     public void delete(UUID id) {
+        if (!teacherRepository.existsById(id)) {
+            throw new EntityNotFoundException("Teacher not found: " + id);
+        }
         teacherRepository.deleteById(id);
     }
 

@@ -39,6 +39,9 @@ public class GroupService {
     }
 
     public void delete(UUID id) {
+        if (!groupRepository.existsById(id)) {
+            throw new EntityNotFoundException("Group not found: " + id);
+        }
         groupRepository.deleteById(id);
     }
 

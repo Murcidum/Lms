@@ -6,7 +6,7 @@ import com.example.lms.dto.StudentCreateDto;
 import com.example.lms.dto.StudentDto;
 import com.example.lms.mapper.StudentMapper;
 import com.example.lms.model.Student;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.lms.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +35,7 @@ public class StudentService {
     public StudentDto create(StudentCreateDto dto) {
         Student student = studentMapper.toEntity(dto);
         student.setGroup(groupRepository.findById(dto.groupId())
-                .orElseThrow(() -> new EntityNotFoundException("Group not found: " + dto.groupId())));
+                .orElseThrow(() -> new NotFoundException("Group not found: " + dto.groupId())));
         return studentMapper.toDto(studentRepository.save(student));
     }
 
@@ -45,19 +45,19 @@ public class StudentService {
         student.setName(dto.name());
         student.setSurname(dto.surname());
         student.setGroup(groupRepository.findById(dto.groupId())
-                .orElseThrow(() -> new EntityNotFoundException("Group not found: " + dto.groupId())));
+                .orElseThrow(() -> new NotFoundException("Group not found: " + dto.groupId())));
         return studentMapper.toDto(studentRepository.save(student));
     }
 
     public void delete(UUID id) {
         if (!studentRepository.existsById(id)) {
-            throw new EntityNotFoundException("Student not found: " + id);
+            throw new NotFoundException("Student not found: " + id);
         }
         studentRepository.deleteById(id);
     }
 
     private Student getEntityById(UUID id) {
         return studentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Student not found: " + id));
+                .orElseThrow(() -> new NotFoundException("Student not found: " + id));
     }
 }

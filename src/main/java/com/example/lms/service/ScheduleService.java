@@ -8,7 +8,7 @@ import com.example.lms.dto.ScheduleCreateDto;
 import com.example.lms.dto.ScheduleDto;
 import com.example.lms.mapper.ScheduleMapper;
 import com.example.lms.model.Schedule;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.lms.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,11 +50,11 @@ public class ScheduleService {
         checkGroupConflict(dto.groupId(), dto.dateTime(), dto.endDateTime(), null);
         Schedule schedule = scheduleMapper.toEntity(dto);
         schedule.setGroup(groupRepository.findById(dto.groupId())
-                .orElseThrow(() -> new EntityNotFoundException("Group not found: " + dto.groupId())));
+                .orElseThrow(() -> new NotFoundException("Group not found: " + dto.groupId())));
         schedule.setTeacher(teacherRepository.findById(dto.teacherId())
-                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + dto.teacherId())));
+                .orElseThrow(() -> new NotFoundException("Teacher not found: " + dto.teacherId())));
         schedule.setCourse(courseRepository.findById(dto.courseId())
-                .orElseThrow(() -> new EntityNotFoundException("Course not found: " + dto.courseId())));
+                .orElseThrow(() -> new NotFoundException("Course not found: " + dto.courseId())));
         return scheduleMapper.toDto(scheduleRepository.save(schedule));
     }
 
@@ -64,11 +64,11 @@ public class ScheduleService {
         checkGroupConflict(dto.groupId(), dto.dateTime(), dto.endDateTime(), id);
         Schedule schedule = getEntityById(id);
         schedule.setGroup(groupRepository.findById(dto.groupId())
-                .orElseThrow(() -> new EntityNotFoundException("Group not found: " + dto.groupId())));
+                .orElseThrow(() -> new NotFoundException("Group not found: " + dto.groupId())));
         schedule.setTeacher(teacherRepository.findById(dto.teacherId())
-                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + dto.teacherId())));
+                .orElseThrow(() -> new NotFoundException("Teacher not found: " + dto.teacherId())));
         schedule.setCourse(courseRepository.findById(dto.courseId())
-                .orElseThrow(() -> new EntityNotFoundException("Course not found: " + dto.courseId())));
+                .orElseThrow(() -> new NotFoundException("Course not found: " + dto.courseId())));
         schedule.setDateTime(dto.dateTime());
         schedule.setEndDateTime(dto.endDateTime());
         return scheduleMapper.toDto(scheduleRepository.save(schedule));
@@ -76,14 +76,14 @@ public class ScheduleService {
 
     public void delete(UUID id) {
         if (!scheduleRepository.existsById(id)) {
-            throw new EntityNotFoundException("Schedule not found: " + id);
+            throw new NotFoundException("Schedule not found: " + id);
         }
         scheduleRepository.deleteById(id);
     }
 
     private Schedule getEntityById(UUID id) {
         return scheduleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Schedule not found: " + id));
+                .orElseThrow(() -> new NotFoundException("Schedule not found: " + id));
     }
 
     private void checkTeacherConflict(UUID teacherId, LocalDateTime dateTime, LocalDateTime endDateTime, UUID excludeId) {

@@ -6,7 +6,7 @@ import com.example.lms.dto.CourseCreateDto;
 import com.example.lms.dto.CourseDto;
 import com.example.lms.mapper.CourseMapper;
 import com.example.lms.model.Course;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.lms.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +35,7 @@ public class CourseService {
     public CourseDto create(CourseCreateDto dto) {
         Course course = courseMapper.toEntity(dto);
         course.setTeacher(teacherRepository.findById(dto.teacherId())
-                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + dto.teacherId())));
+                .orElseThrow(() -> new NotFoundException("Teacher not found: " + dto.teacherId())));
         return courseMapper.toDto(courseRepository.save(course));
     }
 
@@ -45,19 +45,19 @@ public class CourseService {
         course.setName(dto.name());
         course.setDescription(dto.description());
         course.setTeacher(teacherRepository.findById(dto.teacherId())
-                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + dto.teacherId())));
+                .orElseThrow(() -> new NotFoundException("Teacher not found: " + dto.teacherId())));
         return courseMapper.toDto(courseRepository.save(course));
     }
 
     public void delete(UUID id) {
         if (!courseRepository.existsById(id)) {
-            throw new EntityNotFoundException("Course not found: " + id);
+            throw new NotFoundException("Course not found: " + id);
         }
         courseRepository.deleteById(id);
     }
 
     private Course getEntityById(UUID id) {
         return courseRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Course not found: " + id));
+                .orElseThrow(() -> new NotFoundException("Course not found: " + id));
     }
 }

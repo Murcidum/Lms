@@ -5,7 +5,7 @@ import com.example.lms.dto.TeacherCreateDto;
 import com.example.lms.dto.TeacherDto;
 import com.example.lms.mapper.TeacherMapper;
 import com.example.lms.model.Teacher;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.lms.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -43,14 +43,14 @@ public class TeacherService {
 
     public void delete(UUID id) {
         if (!teacherRepository.existsById(id)) {
-            throw new EntityNotFoundException("Teacher not found: " + id);
+            throw new NotFoundException("Teacher not found: " + id);
         }
         teacherRepository.deleteById(id);
     }
 
     private Teacher getEntityById(UUID id) {
         return teacherRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + id));
+                .orElseThrow(() -> new NotFoundException("Teacher not found: " + id));
     }
 
 }

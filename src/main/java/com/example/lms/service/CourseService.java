@@ -34,18 +34,18 @@ public class CourseService {
     @Transactional
     public CourseDto create(CourseCreateDto dto) {
         Course course = courseMapper.toEntity(dto);
-        course.setTeacher(teacherRepository.findById(dto.getTeacherId())
-                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + dto.getTeacherId())));
+        course.setTeacher(teacherRepository.findById(dto.teacherId())
+                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + dto.teacherId())));
         return courseMapper.toDto(courseRepository.save(course));
     }
 
     @Transactional
     public CourseDto update(UUID id, CourseCreateDto dto) {
         Course course = getEntityById(id);
-        course.setName(dto.getName());
-        course.setDescription(dto.getDescription());
-        course.setTeacher(teacherRepository.findById(dto.getTeacherId())
-                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + dto.getTeacherId())));
+        course.setName(dto.name());
+        course.setDescription(dto.description());
+        course.setTeacher(teacherRepository.findById(dto.teacherId())
+                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + dto.teacherId())));
         return courseMapper.toDto(courseRepository.save(course));
     }
 

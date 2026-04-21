@@ -35,8 +35,8 @@ public class TeacherService {
 
     public TeacherDto update(UUID id, TeacherCreateDto dto) {
         Teacher teacher = getEntityById(id);
-        teacher.setName(dto.getName());
-        teacher.setSurname(dto.getSurname());
+        teacher.setName(dto.name());
+        teacher.setSurname(dto.surname());
         return teacherMapper.toDto(teacherRepository.save(teacher));
     }
 

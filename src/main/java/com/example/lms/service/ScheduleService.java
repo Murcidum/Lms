@@ -46,31 +46,31 @@ public class ScheduleService {
 
     @Transactional
     public ScheduleDto create(ScheduleCreateDto dto) {
-        checkTeacherConflict(dto.getTeacherId(), dto.getDateTime(), dto.getEndDateTime(), null);
-        checkGroupConflict(dto.getGroupId(), dto.getDateTime(), dto.getEndDateTime(), null);
+        checkTeacherConflict(dto.teacherId(), dto.dateTime(), dto.endDateTime(), null);
+        checkGroupConflict(dto.groupId(), dto.dateTime(), dto.endDateTime(), null);
         Schedule schedule = scheduleMapper.toEntity(dto);
-        schedule.setGroup(groupRepository.findById(dto.getGroupId())
-                .orElseThrow(() -> new EntityNotFoundException("Group not found: " + dto.getGroupId())));
-        schedule.setTeacher(teacherRepository.findById(dto.getTeacherId())
-                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + dto.getTeacherId())));
-        schedule.setCourse(courseRepository.findById(dto.getCourseId())
-                .orElseThrow(() -> new EntityNotFoundException("Course not found: " + dto.getCourseId())));
+        schedule.setGroup(groupRepository.findById(dto.groupId())
+                .orElseThrow(() -> new EntityNotFoundException("Group not found: " + dto.groupId())));
+        schedule.setTeacher(teacherRepository.findById(dto.teacherId())
+                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + dto.teacherId())));
+        schedule.setCourse(courseRepository.findById(dto.courseId())
+                .orElseThrow(() -> new EntityNotFoundException("Course not found: " + dto.courseId())));
         return scheduleMapper.toDto(scheduleRepository.save(schedule));
     }
 
     @Transactional
     public ScheduleDto update(UUID id, ScheduleCreateDto dto) {
-        checkTeacherConflict(dto.getTeacherId(), dto.getDateTime(), dto.getEndDateTime(), id);
-        checkGroupConflict(dto.getGroupId(), dto.getDateTime(), dto.getEndDateTime(), id);
+        checkTeacherConflict(dto.teacherId(), dto.dateTime(), dto.endDateTime(), id);
+        checkGroupConflict(dto.groupId(), dto.dateTime(), dto.endDateTime(), id);
         Schedule schedule = getEntityById(id);
-        schedule.setGroup(groupRepository.findById(dto.getGroupId())
-                .orElseThrow(() -> new EntityNotFoundException("Group not found: " + dto.getGroupId())));
-        schedule.setTeacher(teacherRepository.findById(dto.getTeacherId())
-                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + dto.getTeacherId())));
-        schedule.setCourse(courseRepository.findById(dto.getCourseId())
-                .orElseThrow(() -> new EntityNotFoundException("Course not found: " + dto.getCourseId())));
-        schedule.setDateTime(dto.getDateTime());
-        schedule.setEndDateTime(dto.getEndDateTime());
+        schedule.setGroup(groupRepository.findById(dto.groupId())
+                .orElseThrow(() -> new EntityNotFoundException("Group not found: " + dto.groupId())));
+        schedule.setTeacher(teacherRepository.findById(dto.teacherId())
+                .orElseThrow(() -> new EntityNotFoundException("Teacher not found: " + dto.teacherId())));
+        schedule.setCourse(courseRepository.findById(dto.courseId())
+                .orElseThrow(() -> new EntityNotFoundException("Course not found: " + dto.courseId())));
+        schedule.setDateTime(dto.dateTime());
+        schedule.setEndDateTime(dto.endDateTime());
         return scheduleMapper.toDto(scheduleRepository.save(schedule));
     }
 

@@ -34,7 +34,7 @@ public class GroupService {
 
     public GroupDto update(UUID id, GroupCreateDto dto) {
         Group group = getEntityById(id);
-        group.setName(dto.getName());
+        group.setName(dto.name());
         return groupMapper.toDto(groupRepository.save(group));
     }
 

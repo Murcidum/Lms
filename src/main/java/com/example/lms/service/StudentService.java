@@ -34,18 +34,18 @@ public class StudentService {
     @Transactional
     public StudentDto create(StudentCreateDto dto) {
         Student student = studentMapper.toEntity(dto);
-        student.setGroup(groupRepository.findById(dto.getGroupId())
-                .orElseThrow(() -> new EntityNotFoundException("Group not found: " + dto.getGroupId())));
+        student.setGroup(groupRepository.findById(dto.groupId())
+                .orElseThrow(() -> new EntityNotFoundException("Group not found: " + dto.groupId())));
         return studentMapper.toDto(studentRepository.save(student));
     }
 
     @Transactional
     public StudentDto update(UUID id, StudentCreateDto dto) {
         Student student = getEntityById(id);
-        student.setName(dto.getName());
-        student.setSurname(dto.getSurname());
-        student.setGroup(groupRepository.findById(dto.getGroupId())
-                .orElseThrow(() -> new EntityNotFoundException("Group not found: " + dto.getGroupId())));
+        student.setName(dto.name());
+        student.setSurname(dto.surname());
+        student.setGroup(groupRepository.findById(dto.groupId())
+                .orElseThrow(() -> new EntityNotFoundException("Group not found: " + dto.groupId())));
         return studentMapper.toDto(studentRepository.save(student));
     }
 

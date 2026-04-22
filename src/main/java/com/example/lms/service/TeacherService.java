@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -33,6 +34,7 @@ public class TeacherService {
         return teacherMapper.toDto(teacherRepository.save(teacherMapper.toEntity(dto)));
     }
 
+    @Transactional
     public TeacherDto update(UUID id, TeacherCreateDto dto) {
         Teacher teacher = getEntityById(id);
         teacher.setName(dto.name());
@@ -40,7 +42,7 @@ public class TeacherService {
         return teacherMapper.toDto(teacherRepository.save(teacher));
     }
 
-
+    @Transactional
     public void delete(UUID id) {
         if (!teacherRepository.existsById(id)) {
             throw new NotFoundException("Teacher not found: " + id);

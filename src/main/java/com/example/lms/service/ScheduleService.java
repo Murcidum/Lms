@@ -74,6 +74,7 @@ public class ScheduleService {
         return scheduleMapper.toDto(scheduleRepository.save(schedule));
     }
 
+    @Transactional
     public void delete(UUID id) {
         if (!scheduleRepository.existsById(id)) {
             throw new NotFoundException("Schedule not found: " + id);

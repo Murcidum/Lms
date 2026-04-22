@@ -49,6 +49,7 @@ public class StudentService {
         return studentMapper.toDto(studentRepository.save(student));
     }
 
+    @Transactional
     public void delete(UUID id) {
         if (!studentRepository.existsById(id)) {
             throw new NotFoundException("Student not found: " + id);

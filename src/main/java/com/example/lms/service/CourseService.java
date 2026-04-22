@@ -49,6 +49,7 @@ public class CourseService {
         return courseMapper.toDto(courseRepository.save(course));
     }
 
+    @Transactional
     public void delete(UUID id) {
         if (!courseRepository.existsById(id)) {
             throw new NotFoundException("Course not found: " + id);

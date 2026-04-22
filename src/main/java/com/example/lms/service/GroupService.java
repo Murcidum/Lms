@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -32,12 +33,14 @@ public class GroupService {
         return groupMapper.toDto(groupRepository.save(groupMapper.toEntity(dto)));
     }
 
+    @Transactional
     public GroupDto update(UUID id, GroupCreateDto dto) {
         Group group = getEntityById(id);
         group.setName(dto.name());
         return groupMapper.toDto(groupRepository.save(group));
     }
 
+    @Transactional
     public void delete(UUID id) {
         if (!groupRepository.existsById(id)) {
             throw new NotFoundException("Group not found: " + id);

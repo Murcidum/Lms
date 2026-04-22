@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import com.example.lms.model.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -25,5 +26,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, UUID> {
     @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM Schedule s WHERE s.group.id = :groupId AND s.dateTime < :endDateTime AND s.endDateTime > :dateTime AND s.id <> :excludeId")
     boolean existsGroupConflictExcluding(@Param("groupId") UUID groupId, @Param("dateTime") LocalDateTime dateTime, @Param("endDateTime") LocalDateTime endDateTime, @Param("excludeId") UUID excludeId);
 
+    @Transactional
+    void deleteByDateTimeBefore(LocalDateTime date);
 }
 

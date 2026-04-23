@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Tag(name = "Schedules", description = "Управление расписанием")
 @RestController
-@RequestMapping("/api/schedules")
+@RequestMapping("/api/v1/schedules")
 @RequiredArgsConstructor
 public class ScheduleController {
 

@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Tag(name = "Groups", description = "Управление группами")
 @RestController
-@RequestMapping("/api/groups")
+@RequestMapping("/api/v1/groups")
 @RequiredArgsConstructor
 public class GroupController {
 

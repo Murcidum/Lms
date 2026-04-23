@@ -1,0 +1,55 @@
+package com.example.lms.service;
+
+import com.example.lms.dao.GroupRepository;
+import com.example.lms.dto.GroupCreateDto;
+import com.example.lms.dto.GroupDto;
+import com.example.lms.mapper.GroupMapper;
+import com.example.lms.model.Group;
+import com.example.lms.exception.NotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class GroupService {
+
+    private final GroupRepository groupRepository;
+    private final GroupMapper groupMapper;
+
+    public Page<GroupDto> getAll(Pageable pageable) {
+        return groupRepository.findAll(pageable).map(groupMapper::toDto);
+    }
+
+    public GroupDto getById(UUID id) {
+        return groupMapper.toDto(getEntityById(id));
+    }
+
+    public GroupDto create(GroupCreateDto dto) {
+        return groupMapper.toDto(groupRepository.save(groupMapper.toEntity(dto)));
+    }
+
+    @Transactional
+    public GroupDto update(UUID id, GroupCreateDto dto) {
+        Group group = getEntityById(id);
+        group.setName(dto.name());
+        return groupMapper.toDto(groupRepository.save(group));
+    }
+
+    @Transactional
+    public void delete(UUID id) {
+        if (!groupRepository.existsById(id)) {
+            throw new NotFoundException("Group not found: " + id);
+        }
+        groupRepository.deleteById(id);
+    }
+
+    private Group getEntityById(UUID id) {
+        return groupRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Group not found: " + id));
+    }
+}

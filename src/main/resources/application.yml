@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: lms
+  datasource:
+    url: jdbc:postgresql://localhost:5432/lms
+    username: lms_user
+    password: lms_pass
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
